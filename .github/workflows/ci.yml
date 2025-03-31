@@ -1,0 +1,268 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      # [ref:git_branch_pregenerated]
+      - pregenerated
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-ondemand-nix:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      # =================================================================
+      # Setup
+      # =================================================================
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: cachix/install-nix-action@v31
+
+      # First `nix develop` takes some time to build or fetch derivations
+      - name: "Prepare build environment"
+        shell: nix develop --command bash {0}
+        run: echo ready
+
+      - shell: nix develop --command bash {0}
+        run: etc/tidy.sh
+
+      # =================================================================
+      # On-demand generation state tests [ref:codegen_ondemand_state]
+      # =================================================================
+      - name: "Rust: Clippy (on-demand)"
+        shell: nix develop --command bash {0}
+        run: |
+          cd rust
+          cargo clippy --all-targets -- -Dwarnings
+
+      - name: "Rust: Test (on-demand)"
+        shell: nix develop --command bash {0}
+        run: |
+          cd rust
+          cargo test
+
+  # Skip `test-ondemand-windows` to save computing resources
+
+  pregenerate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      OMNIKIT_DIST: ${{ github.workspace }}/omnikit-dist
+    steps:
+      # =================================================================
+      # Setup
+      # =================================================================
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: cachix/install-nix-action@v31
+
+      # =================================================================
+      # Pre-generate
+      # =================================================================
+      - name: Pre-generate distribution
+        shell: nix develop --command bash {0}
+        run: |
+          etc/build.sh generate
+          etc/build.sh dist
+
+      - name: Upload pre-generated distribution
+        uses: actions/upload-artifact@v7
+        with:
+          # [tag:ci_omnikit_pregenerated]
+          name: omnikit-pregenerated
+          path: ${{ github.workspace }}/omnikit-dist/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 2
+
+  test-pregenerated-linux:
+    needs: pregenerate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      # =================================================================
+      # Setup
+      # =================================================================
+      # The checkout provides flake.nix and the test-only omnikit stub.
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          # [ref:ci_omnikit_pregenerated]
+          name: omnikit-pregenerated
+          path: ../dist
+
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-dev
+
+      - name: Install Rust toolchain
+        run: |
+          rustup set profile minimal
+          cd ../dist/rust
+          cargo --version
+          rustup component add clippy
+
+      - name: Build libomnikit.so stub for tests
+        run: |
+          cd rust
+          cargo build -p omni_api_stub
+          # [tag:ci_set_omnikit_dir]
+          # Used by tests ([ref:env_omnikit_dir])
+          mkdir -p "$GITHUB_WORKSPACE/omnikit-stub"
+          cp target/debug/libomnikit.so "$GITHUB_WORKSPACE/omnikit-stub/"
+          echo "OMNIKIT_DIR=$GITHUB_WORKSPACE/omnikit-stub" >> "$GITHUB_ENV"
+
+      # =================================================================
+      # Pre-generated state tests [ref:codegen_pregen_state]
+      # =================================================================
+
+      - name: "Rust: Clippy (pre-generated)"
+        run: |
+          cd ../dist/rust
+          cargo clippy --all-targets -- -Dwarnings
+
+      - name: "Rust: Test (pre-generated)"
+        run: |
+          cd ../dist/rust
+          # Use [ref:ci_set_omnikit_dir]
+          cargo test
+
+      - name: "Rust: Check that plugin module fails to load without libomnikit.so"
+        run: |
+          cd ../dist/rust
+
+          # Test should pass when libomnikit.so is provided.
+          # Use [ref:ci_set_omnikit_dir]
+          cargo test -p sample --test load
+
+          # Test should fail when libomnikit.so is NOT provided.
+          # Override [ref:ci_set_omnikit_dir]
+          export OMNIKIT_DIR="$RUNNER_TEMP/invalid-omnikit-path"
+          mkdir -p "$OMNIKIT_DIR"
+          if cargo test -p sample --test load; then
+            echo "error: test did NOT fail despite libomnikit.so being missing"
+            exit 1
+          else
+            echo "ok: test failed as expected"
+          fi
+
+  test-pregenerated-windows:
+    needs: pregenerate
+    runs-on: windows-2025
+    timeout-minutes: 30
+    steps:
+      # =================================================================
+      # Setup
+      # =================================================================
+      # The checkout provides the test-only omnikit stub.
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          # [ref:ci_omnikit_pregenerated]
+          name: omnikit-pregenerated
+          path: ../dist
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-ucrt-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-glib2
+            mingw-w64-ucrt-x86_64-pkgconf
+
+      - name: Install Rust toolchain
+        shell: msys2 {0}
+        run: |
+          rustup set default-host x86_64-pc-windows-gnu
+          rustup set profile minimal
+          cd ../dist/rust
+          cargo --version
+          rustup component add clippy
+
+      - name: Build omnikit.dll stub for tests
+        shell: msys2 {0}
+        run: |
+          cd rust
+          cargo build -p omni_api_stub
+          mkdir -p ../omnikit-stub
+          cp target/debug/omnikit.dll ../omnikit-stub/
+          echo "OMNIKIT_DIR=$(cygpath -w "$PWD/../omnikit-stub")" >> "$GITHUB_ENV"
+
+      # =================================================================
+      # Pre-generated state tests [ref:codegen_pregen_state]
+      # =================================================================
+      - name: "Rust: Clippy (pre-generated)"
+        shell: msys2 {0}
+        run: |
+          cd ../dist/rust
+          cargo clippy --all-targets -- -Dwarnings
+
+      - name: "Rust: Test (pre-generated)"
+        shell: msys2 {0}
+        run: |
+          cd ../dist/rust
+          cargo test
+
+  publish-pregenerated:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Publish only if tests pass
+    needs:
+      - test-ondemand-nix
+      - test-pregenerated-linux
+      - test-pregenerated-windows
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+    steps:
+      # =================================================================
+      # Setup
+      # =================================================================
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          # [ref:ci_omnikit_pregenerated]
+          name: omnikit-pregenerated
+          path: ${{ runner.temp }}/omnikit-dist
+
+      # =================================================================
+      # Publish pre-generated distribution
+      # =================================================================
+
+      # Push to [ref:git_branch_pregenerated]
+      - name: Update pregenerated branch
+        shell: bash
+        run: |
+          current_main=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [[ "$current_main" != "$GITHUB_SHA" ]]; then
+            echo "main has advanced; skip publishing this older commit"
+            exit 0
+          fi
+
+          if git fetch origin refs/heads/pregenerated:refs/remotes/origin/pregenerated; then
+            git switch --create pregenerated --track origin/pregenerated
+          else
+            git switch --orphan pregenerated
+          fi
+          git rm -r --ignore-unmatch .
+          cp -a "$RUNNER_TEMP/omnikit-dist/." .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "pre-generated distribution is unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Pre-generate bindings from $GITHUB_SHA"
+          git push origin HEAD:refs/heads/pregenerated

@@ -1,0 +1,7 @@
+newline_style = "Unix"
+
+# Unstable options:
+# format_strings = true
+# imports_granularity = "Crate"
+# group_imports = "StdExternalCrate"
+# format_code_in_doc_comments = true

@@ -1,0 +1,7 @@
+# Rust build output
+/target
+
+# Generated code
+# [ref:rust_gen_dir]
+/omni_api_rs/sys/gen
+/omni_api_rs/gen

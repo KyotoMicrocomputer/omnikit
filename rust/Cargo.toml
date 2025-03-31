@@ -1,0 +1,36 @@
+[workspace]
+members = [
+    "omni_api_build",
+    "omni_api_rs",
+    "omni_api_stub",
+    "sample",
+]
+
+resolver = "2"
+
+[workspace.dependencies]
+# crates.io packages used by workspace members
+#
+# To introduce a new dependency, do:
+#
+#   1. Add it to this list if it hasn't been added yet
+#   2. Add `package_name = { workspace = true }` to `[dependencies]`
+#
+glib = { version = "0.22", features = ["v2_74"] }
+gio = "0.22"
+libc = "0.2"
+tracing = "0.1"
+futures = "0.3.16"
+glib-sys = "0.22"
+gio-sys = "0.22"
+gobject-sys = "0.22"
+tempfile = "3.3.0"
+xot = "0.31.2"
+
+omni_api_build.path = "omni_api_build"
+omni_api_rs.path = "omni_api_rs"
+
+[workspace.lints.rust]
+# Deny unsafe code by default. If it is necessary, re-enable it per crate or
+# module by `#![expect(unsafe_code)]` with justification in comments.
+unsafe_code = "deny"

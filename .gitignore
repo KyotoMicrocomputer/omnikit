@@ -1,0 +1,9 @@
+# nix build output
+/result
+
+# Miscellaneous
+__pycache__
+.DS_Store
+
+# etc/gi-docgen.sh [ref:etc_gi_docgen_out_dir]
+/build

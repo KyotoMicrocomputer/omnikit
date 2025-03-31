@@ -1,0 +1,59 @@
+name: API Reference
+
+on:
+  push:
+    branches-ignore:
+      # [ref:git_branch_pregenerated]
+      - pregenerated
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31
+
+      # Use `.#doc` = `devShells.doc` ([ref:flake_devshell_doc]) to avoid
+      # building unnecessary packages
+
+      # First `nix develop` takes some time to build or fetch derivations
+      - name: "Prepare build environment"
+        shell: nix develop .#doc --command bash {0}
+        run: echo ready
+
+      - name: Build documentation
+        shell: nix develop .#doc --command bash {0}
+        run: etc/gi-docgen.sh
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/doc/
+          retention-days: 2
+
+  publish:
+    # TODO: Remove `false &&` when we enable GitHub Pages
+    if: ${{ false && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    needs: build
+    runs-on: ubuntu-slim
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

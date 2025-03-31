@@ -1,0 +1,10 @@
+[package]
+name = "omni_api_build"
+edition = "2024"
+
+[dependencies]
+xot = { workspace = true }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true

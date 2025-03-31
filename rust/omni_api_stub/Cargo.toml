@@ -1,0 +1,13 @@
+[package]
+name = "omni_api_stub"
+edition = "2024"
+
+[lib]
+name = "omnikit"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+omni_api_build = { workspace = true }
+
+[lints]
+workspace = true
