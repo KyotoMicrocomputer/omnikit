@@ -1,0 +1,4 @@
+[toolchain]
+# When you update this, make sure to update `toolchainName.sha256` in
+# `nix/rust.nix` ([ref:nix_rust_toolchain_hash]) as well.
+channel = "nightly-2026-09-24"

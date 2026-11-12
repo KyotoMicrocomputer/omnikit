@@ -1,0 +1,26 @@
+[package]
+name = "sample"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+# Cargo doesn't add `omnikit.dll` to `PATH`, so the unit test binary that links
+# to `sample.dll` cannot run. Suppress the build of unit tests.
+test = false
+
+[dependencies]
+glib = { workspace = true }
+gio = { workspace = true }
+omni_api_rs = { workspace = true }
+
+[dev-dependencies]
+libloading = "0.8"
+
+[[test]]
+name = "load"
+path = "tests/load.rs"
+harness = false
+
+[lints]
+workspace = true

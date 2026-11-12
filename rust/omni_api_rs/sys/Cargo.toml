@@ -1,0 +1,22 @@
+[package]
+name = "omni_api_sys"
+# TODO: Migrate to Rust 2024 when gir tool supports it
+edition = "2021"
+
+[features]
+default = []
+
+# Internal feature to enable code generation in `build.rs`
+_internal_generate = []
+
+[dependencies]
+libc = { workspace = true }
+glib-sys = { workspace = true }
+gobject-sys = { workspace = true }
+gio-sys = { workspace = true }
+
+[build-dependencies]
+
+
+[lints]
+workspace = true

@@ -1,0 +1,396 @@
+# Partial configuration file for `gir`, processed by `build.rs`
+# <https://gtk-rs.org/gir/book/introduction.html>
+
+[[object]]
+# Global functions
+name = "Omni.*"
+status = "generate"
+
+[[object]]
+# FIXME: It's really an error code rather than an error object. Rename it and/or
+# link to `crate::error` in its documentation to avoid confusion
+name = "Omni.Error"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.InternalErrorOps"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.PluginRegistry"
+status = "generate"
+
+[[object]]
+name = "Omni.SourceInfo"
+status = "generate"
+
+[[object]]
+name = "Omni.ToolInfo"
+status = "generate"
+
+[[object]]
+name = "Omni.Transformer"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.TransformerFeatureFlags"
+status = "generate"
+
+[[object]]
+name = "Omni.TransformerContext"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.TransformerState"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.Hasher"
+status = "generate"
+
+[[object]]
+name = "Omni.PipelineSnapshot"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.PipelineFeatureFlags"
+status = "generate"
+
+[[object]]
+name = "Omni.StreamStateFlags"
+status = "generate"
+
+[[object]]
+name = "Omni.PhysStreamId"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.PipelineLayout"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.Time"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.TransformUniformContext"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.StreamReprType"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.ArrowRecordBatch"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.ArrowSchema"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.ArrowRecordBatchStream"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.StreamRepr"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.PipelineQuery"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.PortLinkSet"
+status = "generate"
+concurrency = "send+sync"
+
+    [[object.function]]
+    name = "dup_param_set"
+    rename = "param_set"
+
+[[object]]
+name = "Omni.Source"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.SourceSnapshot"
+status = "generate"
+concurrency = "send+sync"
+
+    [[object.function]]
+    name = "dup_port_attributes"
+    rename = "port_attributes"
+
+    [[object.function]]
+    name = "plan_async"
+    no_future = true  # buggy with `GenericArray<_>` with full transfer, useless anyway because of `!Send` future
+
+[[object]]
+name = "Omni.SourcePlanContext"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.SourcePlan"
+status = "generate"
+concurrency = "send+sync"
+
+    [[object.function]]
+    name = "activate_async"
+
+[[object]]
+name = "Omni.SourceActivateContext"
+status = "generate"
+concurrency = "send+sync"
+
+    [[object.function]]
+    name = "dup_stream_sink"
+    rename = "stream_sink"
+
+[[object]]
+name = "Omni.StreamSink"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.RecordClock"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.ActiveSource"
+status = "generate"
+concurrency = "send+sync"
+
+[[object]]
+name = "Omni.Tool"
+status = "generate"
+
+[[object]]
+name = "Omni.VariantDictForEachFunc"
+status = "generate"
+
+[[object]]
+name = "Omni.PipelineBuilder"
+status = "generate"
+
+    [[object.function]]
+    name = "dup_stream_by_handle"
+    rename = "stream_by_handle"
+
+[[object]]
+name = "Omni.Link"
+status = "generate"
+
+[[object]]
+name = "Omni.LinkArray"
+status = "generate"
+
+    [[object.function]]
+    name = "dup_link"
+    rename = "link"
+
+[[object]]
+name = "Omni.LinkPolicy"
+status = "generate"
+concurrency = "send+sync"
+generate_builder = true
+
+[[object]]
+name = "Omni.LinkPolicyFlags"
+status = "generate"
+
+[[object]]
+name = "Omni.StreamBuilder"
+status = "generate"
+
+    [[object.function]]
+    name = "dup_table_schema"
+    rename = "table_schema"
+
+    [[object.function]]
+    name = "get_table_secondary_key"
+
+    [[object.function.return]]
+        bool_return_is_error = "index out of range"
+
+[[object]]
+name = "Omni.TableStreamKeyFlags"
+status = "generate"
+
+[[object]]
+name = "Omni.TransformOpBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectOpBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectOutputStreamBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectInputStreamBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectFilterBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectUnionBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectJoinBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ProjectFieldBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ColumnFlags"
+status = "generate"
+
+[[object]]
+name = "Omni.SortOrder"
+status = "generate"
+exhaustive = true
+
+[[object]]
+name = "Omni.TrackBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.GroupFieldBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.SimpleSummaryBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.RichSummaryBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.SpanLayerBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.SpanStyle"
+status = "generate"
+
+[[object]]
+name = "Omni.PlotSummaryBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.PlotLayerType"
+status = "generate"
+
+[[object]]
+name = "Omni.PlotLayerBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.PlotSeriesBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ValueLineLayerBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ValueTickBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ListingDetailBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.AggregationDetailBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.AggregationStreamBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.TextDetailBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.SummaryBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.DetailBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.ColumnBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.AggregationGroupBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.AggregationColumnBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.GroupColumnBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.StreamDebugTrackBuilder"
+status = "generate"
+
+[[object]]
+name = "Omni.VariantDictForEachFunc"
+status = "generate"
+
+[options]
+external_libraries = [
+    "GLib",
+    "GObject",
+    "Gio",
+]
+generate = []
+manual = [
+    "GLib.Bytes",
+    # <https://github.com/gtk-rs/gir/issues/1340#issuecomment-1090225160>
+    "GLib.Error",
+    "GLib.Variant",
+    "Gio.Cancellable",
+    "Gio.AsyncReadyCallback",
+    "Gio.AsyncResult",
+    "GObject.Value",
+    "GObject.ParamSpec",
+]
+
+# `build.rs` will add extra keys below; please do not create other sections
+# [tag:api_rs_gir_options_autogen]
