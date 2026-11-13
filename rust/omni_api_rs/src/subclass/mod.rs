@@ -3,7 +3,7 @@
 //!
 //! # Async Methods
 //!
-//! `[tag:api_rs_subclass_future]`
+//! `[tagref redacted]`
 //! Some subclassing traits (`*Impl`) provide both `*_async` and `*_future`
 //! versions of async methods. The `*_async` versions provide default
 //! implementations to call `*_future` in a spawned task. Implementors have two

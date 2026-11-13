@@ -30,7 +30,7 @@ fn main() {
         };
         let output = target.join("debug");
 
-        // [tag:env_omnikit_dir]
+        // [tagref redacted]
         // Use it `libomnikit.so` is provided externally
         let omnikit_dir = env::var_os("OMNIKIT_DIR").map(PathBuf::from);
         match &omnikit_dir {
@@ -107,7 +107,7 @@ fn main() {
     }
 
     // The plugin module should depend on `libomnikit.so`
-    // (and not `libomnikit_link.so` [ref:api_rs_build_soname])
+    // (and not `libomnikit_link.so` [tagref redacted])
     #[cfg(target_os = "linux")]
     {
         let mut cmd = Command::new("ldd");

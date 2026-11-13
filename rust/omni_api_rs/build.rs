@@ -6,7 +6,7 @@ fn main() {
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
     // The directory where `omni_api_build::generate_bindings`'s output is
-    // stored. Assume [ref:codegen_pregen_state] [ref:rust_gen_dir] first.
+    // stored. Assume [tagref redacted] [tagref redacted] first.
     let mut gen_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
     gen_dir.push("gen");
 
@@ -14,7 +14,7 @@ fn main() {
         cfg_select! {
             feature = "_internal_generate" => {
                 // The bindings are missing. We are in
-                // [ref:codegen_ondemand_state], so generate bindings.
+                // [tagref redacted], so generate bindings.
                 omni_api_build::generate_bindings(
                     omni_api_build::BindingTy::Api,
                     &mut omni_api_build::BuildScriptOutput,

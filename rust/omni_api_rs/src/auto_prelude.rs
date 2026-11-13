@@ -1,5 +1,5 @@
 /// The macro invoked in each `gir`-generated module
-/// `[tag:api_rs_patch_auto]`
+/// `[tagref redacted]`
 macro_rules! patch_auto {
     // No file-specific rules are defined at the moment
 

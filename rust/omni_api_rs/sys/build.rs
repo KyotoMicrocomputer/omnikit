@@ -4,7 +4,7 @@ fn main() {
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
     // The directory where `omni_api_build::generate_bindings`'s output is
-    // stored. Assume [ref:codegen_pregen_state] [ref:rust_gen_dir] first.
+    // stored. Assume [tagref redacted] [tagref redacted] first.
     let mut gen_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
     gen_dir.push("gen");
 
@@ -12,7 +12,7 @@ fn main() {
         cfg_select! {
             feature = "_internal_generate" => {
                 // The bindings are missing. We are in
-                // [ref:codegen_ondemand_state], so generate bindings.
+                // [tagref redacted], so generate bindings.
                 omni_api_build::generate_bindings(
                     omni_api_build::BindingTy::Ffi,
                     &mut omni_api_build::BuildScriptOutput,
@@ -30,7 +30,7 @@ fn main() {
     }
 
     // Read the symbol list
-    // [ref:api_build_symbol_list]
+    // [tagref redacted]
     let symbols_path = gen_dir.join("api_symbols.txt");
     let symbols = std::fs::read_to_string(&symbols_path)
         .unwrap_or_else(|e| panic!("failed to read {symbols_path:?}: {e}"));
@@ -51,7 +51,7 @@ fn main() {
 
             // Build a stub shared library
             //
-            // [tag:api_rs_build_soname]
+            // [tagref redacted]
             // Explicitly sepcify the SONAME `libomnikit.so` and give the
             // stub library a different file name. This ensures that, when a
             // user is running Cargo on a downstream crate, binaries built by

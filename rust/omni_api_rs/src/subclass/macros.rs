@@ -1,5 +1,5 @@
 //! The common code for the default implementation of `*_async` methods.
-//! `[ref:api_rs_subclass_future]`
+//! `[tagref redacted]`
 use glib::translate::IntoGlib as _;
 
 macro_rules! default_async {
