@@ -31,6 +31,11 @@ dist() {
     cp -R meta "$out/"
 
     rust/build.sh dist
+
+    # Redact Tagref markers from all distributed files so that they are not
+    # flagged when the files are vendored in a downstream project.
+    find "$out" -type f -exec sed -i -E 's/\[(tag|ref|dir|file):[^]]*\]/[tagref redacted]/g' {} +
+    tagref -p "$out"
 }
 
 if [[ $# -ne 1 ]]; then
