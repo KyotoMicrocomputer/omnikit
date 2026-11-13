@@ -20,6 +20,7 @@ The following software is required to develop OmniKit:
      - On Windows, this must be installed by MSYS2 package `mingw-w64-ucrt-x86_64-pkgconf`
 
 - [Rustup][1]
+     - On Windows, rustup must be [configured][7] to use the GNU toolchain by default.
 
 - [gtk-rs's gir tool][2], which is included in this repository as the submodule `../../vendor/gtk-rs-gir`
   <!-- [dir:../vendor/gtk-rs-gir] -->
@@ -148,3 +149,4 @@ Perform the following steps:
 [4]: https://www.msys2.org/docs/environments/
 [5]: https://nix.dev/
 [6]: https://packages.debian.org/trixie/libgirepository1.0-dev
+[7]: https://rust-lang.github.io/rustup/installation/windows.html
