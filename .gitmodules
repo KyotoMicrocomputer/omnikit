@@ -1,6 +1,8 @@
 [submodule "vendor/gir-files"]
 	path = vendor/gir-files
 	url = https://github.com/gtk-rs/gir-files.git
+	shallow = true
 [submodule "vendor/gtk-rs-gir"]
 	path = vendor/gtk-rs-gir
 	url = https://github.com/gtk-rs/gir.git
+	shallow = true
