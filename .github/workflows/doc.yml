@@ -42,8 +42,7 @@ jobs:
           retention-days: 2
 
   publish:
-    # TODO: Remove `false &&` when we enable GitHub Pages
-    if: ${{ false && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     needs: build
     runs-on: ubuntu-slim
     permissions:
